@@ -1,0 +1,3 @@
+<!-- language file start -->
+limit_to_groles#:#Limit creation access for STACK questions to certain global roles
+global_roles#:#Global Roles
