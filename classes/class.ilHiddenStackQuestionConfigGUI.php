@@ -22,8 +22,7 @@ class ilHiddenStackQuestionConfigGUI extends ilPluginConfigGUI
 	public function performCommand($cmd)
 	{
 		$this->pluginObj = ilPlugin::getPluginObject('Services', 'UIComponent', 'uihk', 'HiddenStackQuestion');
-		switch($cmd)
-		{
+		switch ($cmd) {
 			default:
 				$this->$cmd();
 				break;
@@ -45,9 +44,8 @@ class ilHiddenStackQuestionConfigGUI extends ilPluginConfigGUI
 	{
 		/**
 		 * @var $tpl        ilTemplate
-		 * @var $ilSetting  ilSetting
 		 */
-		global $tpl, $ilSetting;
+		global $tpl;
 
 		$this->initSettingsForm();
 		$this->populateValues();
@@ -60,8 +58,8 @@ class ilHiddenStackQuestionConfigGUI extends ilPluginConfigGUI
 	protected function populateValues()
 	{
 		$this->form->setValuesByArray(array(
-			'limit_to_groles'     => $this->pluginObj->getSetting('limit_to_groles'),
-			'global_roles'        => explode(',', $this->pluginObj->getSetting('global_roles'))
+			'limit_to_groles' => $this->pluginObj->getSetting('limit_to_groles'),
+			'global_roles'    => explode(',', $this->pluginObj->getSetting('global_roles'))
 		));
 	}
 
@@ -71,15 +69,14 @@ class ilHiddenStackQuestionConfigGUI extends ilPluginConfigGUI
 	protected function initSettingsForm()
 	{
 		/**
-		 * @var $lng    ilLanguage
-		 * @var $ilCtrl ilCtrl
+		 * @var $lng            ilLanguage
+		 * @var $ilCtrl         ilCtrl
 		 * @var $ilObjDataCache ilObjectDataCache
-		 * @var $rbacreview ilRbacReview
+		 * @var $rbacreview     ilRbacReview
 		 */
 		global $lng, $ilCtrl, $rbacreview, $ilObjDataCache;
 
-		if($this->form instanceof ilPropertyFormGUI)
-		{
+		if ($this->form instanceof ilPropertyFormGUI) {
 			return;
 		}
 
@@ -94,11 +91,9 @@ class ilHiddenStackQuestionConfigGUI extends ilPluginConfigGUI
 			$this->pluginObj->txt('global_roles'),
 			'global_roles'
 		);
-		$roles = array();
-		foreach($rbacreview->getGlobalRoles() as $role_id)
-		{
-			if($role_id != ANONYMOUS_ROLE_ID)
-			{
+		$roles     = array();
+		foreach ($rbacreview->getGlobalRoles() as $role_id) {
+			if ($role_id != ANONYMOUS_ROLE_ID) {
 				$roles[$role_id] = $ilObjDataCache->lookupTitle($role_id);
 			}
 		}
@@ -108,9 +103,7 @@ class ilHiddenStackQuestionConfigGUI extends ilPluginConfigGUI
 		$this->form->addItem($form_limit_to_groles);
 	}
 
-
 	/**N
-	 *
 	 */
 	public function saveSettings()
 	{
@@ -123,8 +116,7 @@ class ilHiddenStackQuestionConfigGUI extends ilPluginConfigGUI
 
 		$this->initSettingsForm();
 
-		if($this->form->checkInput())
-		{
+		if ($this->form->checkInput()) {
 			$this->pluginObj->setSetting('limit_to_groles', (int)$this->form->getInput('limit_to_groles'));
 			$this->pluginObj->setSetting('global_roles', implode(',', (array)$this->form->getInput('global_roles')));
 

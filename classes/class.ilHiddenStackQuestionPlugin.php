@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 1998-2016 ILIAS open source, Extended GPL, see docs/LICENSE */
+/* Copyright (c) 1998-2017 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 require_once 'Services/UIComponent/classes/class.ilUserInterfaceHookPlugin.php';
 
@@ -48,7 +48,7 @@ class ilHiddenStackQuestionPlugin extends ilUserInterfaceHookPlugin
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	protected function init()
 	{
@@ -61,8 +61,7 @@ class ilHiddenStackQuestionPlugin extends ilUserInterfaceHookPlugin
 	 */
 	public static function getInstance()
 	{
-		if(self::$instance instanceof self)
-		{
+		if (self::$instance instanceof self) {
 			return self::$instance;
 		}
 
@@ -107,23 +106,19 @@ class ilHiddenStackQuestionPlugin extends ilUserInterfaceHookPlugin
 
 		$plugin = self::getInstance();
 
-		if(!$plugin->getSetting('limit_to_groles'))
-		{
+		if (!$plugin->getSetting('limit_to_groles')) {
 			return true;
 		}
 
 		$groles = explode(',', $plugin->getSetting('global_roles'));
 		$groles = array_filter($groles);
 
-		if(!$groles)
-		{
+		if (!$groles) {
 			return true;
 		}
 
-		foreach($groles as $role_id)
-		{
-			if($rbacreview->isAssigned($usr_id, $role_id))
-			{
+		foreach ($groles as $role_id) {
+			if ($rbacreview->isAssigned($usr_id, $role_id)) {
 				return true;
 			}
 		}
