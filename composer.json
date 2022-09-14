@@ -1,0 +1,14 @@
+{
+  "require": {
+    "php": ">=5.3 <8.0"
+  },
+  "autoload": {
+    "psr-4" : { "ILIAS\\Plugin\\HiddenStackQuestion\\" : "./classes" },
+    "classmap": ["./classes"],
+    "exclude-from-classmap": []
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "classmap-authoritative": true
+  }
+}
