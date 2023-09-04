@@ -37,9 +37,9 @@ class ilHiddenStackQuestionConfigGUI extends ilPluginConfigGUI
     protected function editSettings()
     {
         /**
-         * @var $tpl        ilTemplate|ilGlobalTemplateInterface
-         * @var $ilSetting  ilSetting
+         * @var $tpl ilTemplate|ilGlobalTemplateInterface
          */
+        global $tpl;
 
         $this->initSettingsForm();
         $this->populateValues();
