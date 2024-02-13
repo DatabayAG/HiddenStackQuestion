@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (c) 1998-2017 ILIAS open source, Extended GPL, see docs/LICENSE */
 $id = 'hsqst';
 $version = '2.0.0';
