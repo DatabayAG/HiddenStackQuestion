@@ -1,5 +1,5 @@
 # HiddenStackQuestion
-* For ILIAS versions: 5.1.0 - 7.999
+* For ILIAS versions: 8.0 - 8.999
 
 ## Installation Instructions
 1. Copy this plugin to <ILIAS_DIRECTORY>/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/HiddenStackQuestion

@@ -1,7 +1,22 @@
 <?php
-/* Copyright (c) 1998-2017 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-require_once 'Services/UIComponent/classes/class.ilUserInterfaceHookPlugin.php';
+/**
+ * This file is part of ILIAS, a powerful learning management system
+ * published by ILIAS open source e-Learning e.V.
+ *
+ * ILIAS is licensed with the GPL-3.0,
+ * see https://www.gnu.org/licenses/gpl-3.0.en.html
+ * You should have received a copy of said license along with the
+ * source code, too.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ * https://www.ilias.de
+ * https://github.com/ILIAS-eLearning
+ *
+ *********************************************************************/
+
+declare(strict_types=1);
 
 /**
  * Class ilHiddenStackQuestionPlugin
@@ -9,128 +24,87 @@ require_once 'Services/UIComponent/classes/class.ilUserInterfaceHookPlugin.php';
  */
 class ilHiddenStackQuestionPlugin extends ilUserInterfaceHookPlugin
 {
-	/**
-	 * @var string
-	 */
-	const CTYPE = 'Services';
+    public const CTYPE = 'Services';
+    public const CNAME = 'UIComponent';
+    public const SLOT_ID = 'uihk';
+    public const PNAME = 'HiddenStackQuestion';
+    private static ?self $instance = null;
+    protected ilSetting $settings;
 
-	/**
-	 * @var string
-	 */
-	const CNAME = 'UIComponent';
+    public function getPluginName(): string
+    {
+        return self::PNAME;
+    }
 
-	/**
-	 * @var string
-	 */
-	const SLOT_ID = 'uihk';
+    protected function init(): void
+    {
+        parent::init();
+        $this->settings = new ilSetting('pl_hsqst');
+    }
 
-	/**
-	 * @var string
-	 */
-	const PNAME = 'HiddenStackQuestion';
+    public static function getInstance(): self
+    {
+        global $DIC;
 
-	/**+
-	 * @var self
-	 */
-	protected static $instance = null;
+        if (self::$instance instanceof self) {
+            return self::$instance;
+        }
 
-	/**
-	 * @var ilSetting
-	 */
-	protected $settings;
+        /** @var ilComponentRepository $component_repository */
+        $component_repository = $DIC['component.repository'];
+        /** @var ilComponentFactory $component_factory */
+        $component_factory = $DIC['component.factory'];
 
-	/**
-	 * @return string
-	 */
-	public function getPluginName()
-	{
-		return self::PNAME;
-	}
+        $plugin_info = $component_repository->getComponentByTypeAndName(
+            self::CTYPE,
+            self::CNAME
+        )->getPluginSlotById(self::SLOT_ID)->getPluginByName(self::PNAME);
 
-	/**
-	 *
-	 */
-	protected function init()
-	{
-		parent::init();
-		$this->settings = new ilSetting('pl_hsqst');
-	}
+        self::$instance = $component_factory->getPlugin($plugin_info->getId());
 
-	/**
-	 * @return self
-	 */
-	public static function getInstance()
-	{
-		if (self::$instance instanceof self) {
-			return self::$instance;
-		}
+        return self::$instance;
+    }
 
-		self::$instance = ilPluginAdmin::getPluginObject(
-			self::CTYPE,
-			self::CNAME,
-			self::SLOT_ID,
-			self::PNAME
-		);
+    public function setSetting(string $keyword, string $value): void
+    {
+        $this->settings->set('ecr_' . $keyword, $value);
+    }
 
-		return self::$instance;
-	}
+    public function getSetting(string $keyword): string
+    {
+        return (string) $this->settings->get('ecr_' . $keyword, '');
+    }
 
-	/**
-	 * @param string $keyword
-	 * @param mixed  $value
-	 */
-	public function setSetting($keyword, $value)
-	{
-		$this->settings->set('ecr_' . $keyword, $value);
-	}
+    public function isAssignedToRequiredRole(int $usr_id): bool
+    {
+        global $DIC;
 
-	/**
-	 * @param string $keyword
-	 * @return mixed
-	 */
-	public function getSetting($keyword)
-	{
-		return $this->settings->get('ecr_' . $keyword, '');
-	}
+        $rbacreview = $DIC->rbac()->review();
 
-	/**
-	 * @param $usr_id
-	 * @return bool
-	 */
-	public function isAssignedToRequiredRole($usr_id)
-	{
-		/**
-		 * @var $rbacreview ilRbacReview
-		 */
-		global $rbacreview;
+        $plugin = self::getInstance();
 
-		$plugin = self::getInstance();
+        if ($plugin->getSetting('limit_to_groles') == '') {
+            return true;
+        }
 
-		if (!$plugin->getSetting('limit_to_groles')) {
-			return true;
-		}
+        $groles = explode(',', $plugin->getSetting('global_roles'));
+        $groles = array_filter($groles);
 
-		$groles = explode(',', $plugin->getSetting('global_roles'));
-		$groles = array_filter($groles);
+        if (!$groles) {
+            return true;
+        }
 
-		if (!$groles) {
-			return true;
-		}
+        foreach ($groles as $role_id) {
+            if ($rbacreview->isAssigned($usr_id, (int) $role_id)) {
+                return true;
+            }
+        }
 
-		foreach ($groles as $role_id) {
-			if ($rbacreview->isAssigned($usr_id, $role_id)) {
-				return true;
-			}
-		}
+        return false;
+    }
 
-		return false;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	protected function afterUninstall()
-	{
-		parent::afterUninstall();
-	}
+    protected function afterUninstall(): void
+    {
+        parent::afterUninstall();
+    }
 }

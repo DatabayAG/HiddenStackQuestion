@@ -1,27 +1,34 @@
 <?php
-/* Copyright (c) 1998-2017 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-require_once 'Services/Form/classes/class.ilPropertyFormGUI.php';
-require_once 'Services/Component/classes/class.ilPluginConfigGUI.php';
+/**
+ * This file is part of ILIAS, a powerful learning management system
+ * published by ILIAS open source e-Learning e.V.
+ *
+ * ILIAS is licensed with the GPL-3.0,
+ * see https://www.gnu.org/licenses/gpl-3.0.en.html
+ * You should have received a copy of said license along with the
+ * source code, too.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ * https://www.ilias.de
+ * https://github.com/ILIAS-eLearning
+ *
+ *********************************************************************/
 
+declare(strict_types=1);
+
+/**
+ * @ilCtrl_isCalledBy ilHiddenStackQuestionConfigGUI: ilObjComponentSettingsGUI
+ */
 class ilHiddenStackQuestionConfigGUI extends ilPluginConfigGUI
 {
-    /**
-     * @var ilHiddenStackQuestionPlugin
-     */
-    public $pluginObj = null;
+    public ?ilHiddenStackQuestionPlugin $pluginObj = null;
+    public ?ilPropertyFormGUI $form = null;
 
-    /**
-     * @var ilPropertyFormGUI
-     */
-    public $form = null;
-
-    /**
-     * @param string $cmd
-     */
-    public function performCommand($cmd)
+    public function performCommand(string $cmd): void
     {
-        $this->pluginObj = ilPlugin::getPluginObject('Services', 'UIComponent', 'uihk', 'HiddenStackQuestion');
+        $this->pluginObj = ilHiddenStackQuestionPlugin::getInstance();
         switch ($cmd) {
             default:
                 $this->$cmd();
@@ -29,24 +36,23 @@ class ilHiddenStackQuestionConfigGUI extends ilPluginConfigGUI
         }
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->editSettings();
     }
 
-    protected function editSettings()
+    protected function editSettings(): void
     {
-        /**
-         * @var $tpl ilTemplate|ilGlobalTemplateInterface
-         */
-        global $tpl;
+        global $DIC;
+
+        $tpl = $DIC->ui()->mainTemplate();
 
         $this->initSettingsForm();
         $this->populateValues();
         $tpl->setContent($this->form->getHTML());
     }
 
-    protected function populateValues()
+    protected function populateValues(): void
     {
         $this->form->setValuesByArray(array(
             'limit_to_groles' => $this->pluginObj->getSetting('limit_to_groles'),
@@ -54,15 +60,14 @@ class ilHiddenStackQuestionConfigGUI extends ilPluginConfigGUI
         ));
     }
 
-    protected function initSettingsForm()
+    protected function initSettingsForm(): void
     {
-        /**
-         * @var $lng    ilLanguage
-         * @var $ilCtrl ilCtrl
-         * @var $ilObjDataCache ilObjectDataCache
-         * @var $rbacreview ilRbacReview
-         */
-        global $lng, $ilCtrl, $rbacreview, $ilObjDataCache;
+        global $DIC;
+
+        $lng = $DIC->language();
+        $ilCtrl = $DIC->ctrl();
+        $rbacreview = $DIC->rbac()->review();
+        $ilObjDataCache = $DIC['ilObjDataCache'];
 
         if ($this->form instanceof ilPropertyFormGUI) {
             return;
@@ -79,7 +84,7 @@ class ilHiddenStackQuestionConfigGUI extends ilPluginConfigGUI
             $this->pluginObj->txt('global_roles'),
             'global_roles'
         );
-        $roles = array();
+        $roles = [];
         foreach ($rbacreview->getGlobalRoles() as $role_id) {
             if ($role_id != ANONYMOUS_ROLE_ID) {
                 $roles[$role_id] = $ilObjDataCache->lookupTitle($role_id);
@@ -91,14 +96,13 @@ class ilHiddenStackQuestionConfigGUI extends ilPluginConfigGUI
         $this->form->addItem($form_limit_to_groles);
     }
 
-    public function saveSettings()
+    public function saveSettings(): void
     {
-        /**
-         * @var $tpl    ilTemplate|ilGlobalTemplateInterface
-         * @var $lng    ilLanguage
-         * @var $ilCtrl ilCtrl
-         */
-        global $tpl, $lng, $ilCtrl;
+        global $DIC;
+
+        $tpl = $DIC->ui()->mainTemplate();
+        $lng = $DIC->language();
+        $ilCtrl = $DIC->ctrl();
 
         $this->initSettingsForm();
 
@@ -106,7 +110,7 @@ class ilHiddenStackQuestionConfigGUI extends ilPluginConfigGUI
             $this->pluginObj->setSetting('limit_to_groles', (int) $this->form->getInput('limit_to_groles'));
             $this->pluginObj->setSetting('global_roles', implode(',', (array) $this->form->getInput('global_roles')));
 
-            ilUtil::sendSuccess($lng->txt('saved_successfully'), true);
+            $tpl->setOnScreenMessage('success', $lng->txt('saved_successfully'), true);
             $ilCtrl->redirect($this);
         }
 
