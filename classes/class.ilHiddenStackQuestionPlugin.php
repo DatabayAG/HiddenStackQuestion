@@ -28,8 +28,10 @@ class ilHiddenStackQuestionPlugin extends ilUserInterfaceHookPlugin
     public const CNAME = 'UIComponent';
     public const SLOT_ID = 'uihk';
     public const PNAME = 'HiddenStackQuestion';
+
     private static ?self $instance = null;
-    protected ilSetting $settings;
+
+    private ilSetting $settings;
 
     public function getPluginName(): string
     {
