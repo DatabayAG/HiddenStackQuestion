@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -48,7 +47,6 @@ class ilHiddenStackQuestionUIHookGUI extends ilUIHookPluginGUI
             if (!$this->plugin_object->isAssignedToRequiredRole($GLOBALS['ilUser']->getId())) {
                 $html = $a_par['html'];
 
-                require_once 'Modules/TestQuestionPool/classes/class.ilObjQuestionPool.php';
                 $types = ilObjQuestionPool::_getQuestionTypes();
 
                 $html = preg_replace(

@@ -79,7 +79,6 @@ class ilHiddenStackQuestionConfigGUI extends ilPluginConfigGUI
         $this->form->addCommandButton('saveSettings', $lng->txt('save'));
 
         $form_limit_to_groles = new ilCheckboxInputGUI($this->pluginObj->txt('limit_to_groles'), 'limit_to_groles');
-        include_once 'Services/Form/classes/class.ilMultiSelectInputGUI.php';
         $sub_mlist = new ilMultiSelectInputGUI(
             $this->pluginObj->txt('global_roles'),
             'global_roles'
@@ -107,7 +106,7 @@ class ilHiddenStackQuestionConfigGUI extends ilPluginConfigGUI
         $this->initSettingsForm();
 
         if ($this->form->checkInput()) {
-            $this->pluginObj->setSetting('limit_to_groles', (int) $this->form->getInput('limit_to_groles'));
+            $this->pluginObj->setSetting('limit_to_groles', (string) $this->form->getInput('limit_to_groles'));
             $this->pluginObj->setSetting('global_roles', implode(',', (array) $this->form->getInput('global_roles')));
 
             $tpl->setOnScreenMessage('success', $lng->txt('saved_successfully'), true);

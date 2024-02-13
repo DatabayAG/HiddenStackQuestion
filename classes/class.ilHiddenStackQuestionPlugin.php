@@ -103,8 +103,4 @@ class ilHiddenStackQuestionPlugin extends ilUserInterfaceHookPlugin
         return false;
     }
 
-    protected function afterUninstall(): void
-    {
-        parent::afterUninstall();
-    }
 }
