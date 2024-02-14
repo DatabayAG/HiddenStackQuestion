@@ -1,16 +1,31 @@
 <?php
-/* Copyright (c) 1998-2017 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-require_once 'Services/UIComponent/classes/class.ilUIHookPluginGUI.php';
+/**
+ * This file is part of ILIAS, a powerful learning management system
+ * published by ILIAS open source e-Learning e.V.
+ *
+ * ILIAS is licensed with the GPL-3.0,
+ * see https://www.gnu.org/licenses/gpl-3.0.en.html
+ * You should have received a copy of said license along with the
+ * source code, too.
+ *
+ * If this is not the case or you just want to try ILIAS, you'll find
+ * us at:
+ * https://www.ilias.de
+ * https://github.com/ILIAS-eLearning
+ *
+ *********************************************************************/
+
+declare(strict_types=1);
 
 /**
  * Class ilHiddenStackQuestionUIHookGUI
- * @author Michael Jansen <mjansen@databay.de>
+ * @author            Michael Jansen <mjansen@databay.de>
  * @ilCtrl_isCalledBy ilHiddenStackQuestionUIHookGUI: ilUIPluginRouterGUI
  */
 class ilHiddenStackQuestionUIHookGUI extends ilUIHookPluginGUI
 {
-    const STACK_QUESTION_TYPE = 'assStackQuestion';
+    public const STACK_QUESTION_TYPE = 'assStackQuestion';
 
     /**
      * @param       $a_comp
@@ -19,21 +34,24 @@ class ilHiddenStackQuestionUIHookGUI extends ilUIHookPluginGUI
      * @return array
      * @throws InvalidArgumentException
      */
-    public function getHTML($a_comp, $a_part, $a_par = array())
-    {
+    public function getHTML(
+        string $a_comp,
+        string $a_part,
+        array $a_par = array()
+    ): array {
         if ($a_part == 'template_get'
             && isset($a_par['tpl_id']) &&
-            $a_par['tpl_id'] == 'Services/Form/tpl.prop_select.html' &&
-            (strpos($a_par['html'], '"sel_question_types"') !== false || strpos($a_par['html'], '"qtype"') !== false)
+            $a_par['tpl_id'] == 'Services/Form/tpl.prop_select.html'
+            && (strpos($a_par['html'], '"sel_question_types"') !== false || strpos($a_par['html'], '"qtype"') !== false)
         ) {
             if (!$this->plugin_object->isAssignedToRequiredRole($GLOBALS['ilUser']->getId())) {
                 $html = $a_par['html'];
 
-                require_once 'Modules/TestQuestionPool/classes/class.ilObjQuestionPool.php';
                 $types = ilObjQuestionPool::_getQuestionTypes();
 
                 $html = preg_replace(
-                    '/<option[\s]+?value="' . self::STACK_QUESTION_TYPE . '".*?>.*?<\/option>/', '',
+                    '/<option[\s]+?value="' . self::STACK_QUESTION_TYPE . '".*?>.*?<\/option>/',
+                    '',
                     $html
                 );
 
@@ -49,10 +67,10 @@ class ilHiddenStackQuestionUIHookGUI extends ilUIHookPluginGUI
                     );
                 }
 
-                return array(
-                    "mode" => ilUIHookPluginGUI::REPLACE,
-                    "html" => $html
-                );
+                return [
+                    'mode' => ilUIHookPluginGUI::REPLACE,
+                    'html' => $html
+                ];
             }
         }
 
