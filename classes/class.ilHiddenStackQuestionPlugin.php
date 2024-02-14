@@ -85,7 +85,7 @@ class ilHiddenStackQuestionPlugin extends ilUserInterfaceHookPlugin
 
         $plugin = self::getInstance();
 
-        if ($plugin->getSetting('limit_to_groles') == '') {
+        if (!$plugin->getSetting('limit_to_groles')) {
             return true;
         }
 
