@@ -28,16 +28,12 @@ class ilHiddenStackQuestionUIHookGUI extends ilUIHookPluginGUI
     public const STACK_QUESTION_TYPE = 'assStackQuestion';
 
     /**
-     * @param       $a_comp
-     * @param       $a_part
-     * @param array $a_par
-     * @return array
      * @throws InvalidArgumentException
      */
     public function getHTML(
         string $a_comp,
         string $a_part,
-        array $a_par = array()
+        array $a_par = []
     ): array {
         if ($a_part == 'template_get'
             && isset($a_par['tpl_id']) &&
