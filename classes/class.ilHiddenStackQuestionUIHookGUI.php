@@ -25,6 +25,10 @@ declare(strict_types=1);
  */
 class ilHiddenStackQuestionUIHookGUI extends ilUIHookPluginGUI
 {
+    /**
+     * @var ilPlugin|ilHiddenStackQuestionPlugin|null
+     */
+    protected ?ilUserInterfaceHookPlugin $plugin_object;
     public const STACK_QUESTION_TYPE = 'assStackQuestion';
 
     /**
@@ -35,37 +39,38 @@ class ilHiddenStackQuestionUIHookGUI extends ilUIHookPluginGUI
         string $a_part,
         array $a_par = []
     ): array {
-        if ($a_part == 'template_get'
+        if ($a_part === 'template_get'
             && isset($a_par['tpl_id']) &&
-            $a_par['tpl_id'] == 'Services/Form/tpl.prop_select.html'
-            && (str_contains((string) $a_par['html'], '"sel_question_types"') || str_contains((string) $a_par['html'], '"qtype"'))
+            $a_par['tpl_id'] === 'Services/Form/tpl.prop_select.html'
+            && (
+                str_contains((string) $a_par['html'], '"sel_question_types"')
+                || str_contains((string) $a_par['html'], '"qtype"')
+            ) && !$this->plugin_object->isAssignedToRequiredRole($GLOBALS['ilUser']->getId())
         ) {
-            if (!$this->plugin_object->isAssignedToRequiredRole($GLOBALS['ilUser']->getId())) {
-                $html = $a_par['html'];
+            $html = $a_par['html'];
 
-                $types = ilObjQuestionPool::_getQuestionTypes();
+            $types = ilObjQuestionPool::_getQuestionTypes();
 
+            $html = preg_replace(
+                '/<option[\s]+?value="' . self::STACK_QUESTION_TYPE . '".*?>.*?<\/option>/',
+                '',
+                (string) $html
+            );
+
+            $stackType = array_filter($types, fn(array $qst) => $qst['type_tag'] === self::STACK_QUESTION_TYPE);
+            if (1 === count($stackType)) {
+                $stackType = current($stackType);
                 $html = preg_replace(
-                    '/<option[\s]+?value="' . self::STACK_QUESTION_TYPE . '".*?>.*?<\/option>/',
+                    '/<option[\s]+?value="' . $stackType['question_type_id'] . '".*?>.*?<\/option>/',
                     '',
-                    (string) $html
+                    $html
                 );
-
-                $stackType = array_filter($types, fn(array $qst) => $qst['type_tag'] === self::STACK_QUESTION_TYPE);
-                if (1 === count($stackType)) {
-                    $stackType = current($stackType);
-                    $html = preg_replace(
-                        '/<option[\s]+?value="' . $stackType['question_type_id'] . '".*?>.*?<\/option>/',
-                        '',
-                        $html
-                    );
-                }
-
-                return [
-                    'mode' => ilUIHookPluginGUI::REPLACE,
-                    'html' => $html
-                ];
             }
+
+            return [
+                'mode' => ilUIHookPluginGUI::REPLACE,
+                'html' => $html
+            ];
         }
 
         return parent::getHTML($a_comp, $a_part, $a_par);
