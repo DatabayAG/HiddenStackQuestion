@@ -38,7 +38,7 @@ class ilHiddenStackQuestionUIHookGUI extends ilUIHookPluginGUI
         if ($a_part == 'template_get'
             && isset($a_par['tpl_id']) &&
             $a_par['tpl_id'] == 'Services/Form/tpl.prop_select.html'
-            && (strpos($a_par['html'], '"sel_question_types"') !== false || strpos($a_par['html'], '"qtype"') !== false)
+            && (str_contains((string) $a_par['html'], '"sel_question_types"') || str_contains((string) $a_par['html'], '"qtype"'))
         ) {
             if (!$this->plugin_object->isAssignedToRequiredRole($GLOBALS['ilUser']->getId())) {
                 $html = $a_par['html'];
@@ -48,12 +48,10 @@ class ilHiddenStackQuestionUIHookGUI extends ilUIHookPluginGUI
                 $html = preg_replace(
                     '/<option[\s]+?value="' . self::STACK_QUESTION_TYPE . '".*?>.*?<\/option>/',
                     '',
-                    $html
+                    (string) $html
                 );
 
-                $stackType = array_filter($types, function (array $qst) {
-                    return $qst['type_tag'] === self::STACK_QUESTION_TYPE;
-                });
+                $stackType = array_filter($types, fn(array $qst) => $qst['type_tag'] === self::STACK_QUESTION_TYPE);
                 if (1 === count($stackType)) {
                     $stackType = current($stackType);
                     $html = preg_replace(
