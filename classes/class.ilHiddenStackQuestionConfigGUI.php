@@ -54,10 +54,10 @@ class ilHiddenStackQuestionConfigGUI extends ilPluginConfigGUI
 
     protected function populateValues(): void
     {
-        $this->form->setValuesByArray(array(
+        $this->form->setValuesByArray([
             'limit_to_groles' => (bool) $this->pluginObj->getSetting('limit_to_groles'),
             'global_roles' => explode(',', $this->pluginObj->getSetting('global_roles'))
-        ));
+        ]);
     }
 
     protected function initSettingsForm(): void
