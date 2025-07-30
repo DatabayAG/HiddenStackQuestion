@@ -13,6 +13,7 @@
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.85",
-    "rector/rector": "^2.1"
+    "rector/rector": "^2.1",
+    "captainhook/captainhook": "^5.25"
   }
 }
