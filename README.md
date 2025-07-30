@@ -2,10 +2,11 @@
 
 ## Requirements
 
-| Component | Version(s)                                                                                           | Link                      |
-|-----------|------------------------------------------------------------------------------------------------------|---------------------------|
-| PHP       | ![](https://img.shields.io/badge/8.1-blue.svg) ![](https://img.shields.io/badge/8.2-blue.svg)        | [PHP](https://php.net)    |
-| ILIAS     | ![](https://img.shields.io/badge/9-orange.svg) to ![](https://img.shields.io/badge/9.999-orange.svg) | [ILIAS](https://ilias.de) |
+| Component             | Version(s)                                                                                           | Link                                               |
+|-----------------------|------------------------------------------------------------------------------------------------------|----------------------------------------------------|
+| PHP                   | ![](https://img.shields.io/badge/8.1-blue.svg) ![](https://img.shields.io/badge/8.2-blue.svg)        | [PHP](https://php.net)                             |
+| ILIAS                 | ![](https://img.shields.io/badge/9-orange.svg) to ![](https://img.shields.io/badge/9.999-orange.svg) | [ILIAS](https://ilias.de)                          |
+| StackQuestion Plugin  | Branch ![](https://img.shields.io/badge/ilias9__stack-orange.svg)                                    | [GitHub](https://github.com/surlabs/STACKForILIAS) |
 
 ---
 
